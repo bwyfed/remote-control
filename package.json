@@ -1,0 +1,31 @@
+{
+  "name": "remote-control",
+  "version": "1.0.0",
+  "description": "用electron开发的远程控制项目。",
+  "main": "app/main/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run start:render\" \"wait-on http://localhost:3000 && npm run start:main\"",
+    "start:main": "electron .",
+    "start:render": "cd app/renderer/src/main && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bwyfed/remote-control.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bwyfed/remote-control/issues"
+  },
+  "homepage": "https://github.com/bwyfed/remote-control#readme",
+  "devDependencies": {
+    "concurrently": "^5.1.0",
+    "electron": "^8.0.1",
+    "wait-on": "^4.0.0"
+  },
+  "dependencies": {
+    "electron-is-dev": "^1.1.0"
+  }
+}
