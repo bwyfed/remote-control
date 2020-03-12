@@ -1,7 +1,7 @@
 const path = require('path');
 const { BrowserWindow } = require('electron');
-const isDev = require('electron-is-dev');
 
+// 生成控制窗口
 let win;
 function create() {
   win = new BrowserWindow({

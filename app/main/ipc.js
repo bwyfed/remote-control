@@ -4,7 +4,7 @@ const { create: createControlWindow } = require('./windows/control');
 
 module.exports = function() {
   ipcMain.handle('login', async () => {
-    // 先mock，返回一个code
+    // 先mock，返回一个local code(模拟一个6位数)
     let code = Math.floor(Math.random() * (999999 - 100000)) + 100000;
     return code;
   });

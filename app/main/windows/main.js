@@ -1,7 +1,7 @@
 const path = require('path');
 const { BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
-
+// 生成主窗口
 let win;
 function create() {
   win = new BrowserWindow({
@@ -14,7 +14,7 @@ function create() {
   if (isDev) {
     win.loadURL('http://localhost:3000');
   } else {
-    // 第三章再开发
+    // 线上环境加载页面，第三章再开发
     win.loadFile(
       path.resolve(__dirname, '../../renderer/pages/main/index.html')
     );
