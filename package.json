@@ -22,10 +22,11 @@
   "homepage": "https://github.com/bwyfed/remote-control#readme",
   "devDependencies": {
     "concurrently": "^5.1.0",
-    "electron": "^8.0.1",
+    "electron": "7.0.0-beta.7",
     "wait-on": "^4.0.0"
   },
   "dependencies": {
-    "electron-is-dev": "^1.1.0"
+    "electron-is-dev": "^1.1.0",
+    "robotjs": "^0.6.0"
   }
 }

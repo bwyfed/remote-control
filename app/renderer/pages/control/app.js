@@ -1,4 +1,8 @@
 const peer = require('./peer-control');
+const robot = require('robotjs');
+
+console.log('robotjs');
+console.log(robot);
 
 peer.on('add-stream', stream => {
   play(stream);
