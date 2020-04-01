@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"npm run start:render\" \"wait-on http://localhost:3000 && npm run start:main\"",
     "start:main": "electron .",
-    "start:render": "cd app/renderer/src/main && npm start"
+    "start:render": "cd app/renderer/src/main && npm start",
+    "rebuild": "npm rebuild --runtime=electron --target=8.2.0 --disturl=https://atom.io/download/atom-shell --abi=57"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,7 @@
   "homepage": "https://github.com/bwyfed/remote-control#readme",
   "devDependencies": {
     "concurrently": "^5.1.0",
-    "electron": "7.0.0-beta.7",
+    "electron": "^8.2.0",
     "wait-on": "^4.0.0"
   },
   "dependencies": {

@@ -18,7 +18,7 @@ function handleKey(data) {
   if (data.alt) modifiers.push('alt');
   if (data.ctrl) modifiers.push('ctrl');
   let key = vkey[data.keyCode].toLowerCase();
-  if (key[0] != '<') {
+  if (key[0] !== '<') {
     // <shift>
     robot.keyTap(key, modifiers);
   }
