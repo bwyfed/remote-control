@@ -1,6 +1,6 @@
 const EventEmitter = require('events');
 const peer = new EventEmitter();
-const { ipcRenderer, desktopCapturer } = require('electron');
+// const { ipcRenderer } = require('electron');
 
 // 暂时屏蔽掉robot相关的代码。
 // peer.on('robot', (type, data) => {

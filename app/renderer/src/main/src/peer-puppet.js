@@ -1,7 +1,6 @@
-// 傀儡段逻辑
-// createAnswer
-// add stream
+// 傀儡端逻辑: createAnswer, add stream
 import { desktopCapturer } from 'electron';
+// 获取桌面流
 async function getScreenStream() {
   const sources = await desktopCapturer.getSources({
     types: ['screen']
@@ -46,11 +45,11 @@ async function addIceCandidate(candidate) {
 
 window.addIceCandidate = addIceCandidate;
 async function createAnswer(offer) {
-  let screenStream = await getScreenStream();
+  let screenStream = await getScreenStream(); // 添加桌面流
   pc.addStream(screenStream);
-  await pc.setRemoteDescription(offer);
-  await pc.setLocalDescription(await pc.createAnswer());
+  await pc.setRemoteDescription(offer); // 设置控制端的描述
+  await pc.setLocalDescription(await pc.createAnswer()); // 设置本地描述
   console.log('answer', JSON.stringify(pc.localDescription));
   return pc.localDescription;
 }
-window.createAnswer = createAnswer;
+window.createAnswer = createAnswer; // 挂载在全局上，便于调用
