@@ -7,5 +7,5 @@ app.on('ready', () => {
   // createControlWindow();
   createMainWindow();
   handleIPC();
-  require('./robot')();
+  // require('./robot')();
 });
