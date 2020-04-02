@@ -1,6 +1,6 @@
 const EventEmitter = require('events');
 const peer = new EventEmitter();
-// const { ipcRenderer } = require('electron');
+const { ipcRenderer } = require('electron');
 
 // 暂时屏蔽掉robot相关的代码。
 // peer.on('robot', (type, data) => {
@@ -17,7 +17,11 @@ const pc = new window.RTCPeerConnection({});
 // addIceCandidate
 pc.onicecandidate = function(e) {
   console.log('candidate', JSON.stringify(e.candidate));
+  ipcRenderer.send('forward', 'control-candidate', e.candidate);
 };
+ipcRenderer.on('candidate', (e, candidate) => {
+  addIceCandidate(candidate);
+});
 let candidates = [];
 async function addIceCandidate(candidate) {
   if (candidate) {
@@ -31,7 +35,7 @@ async function addIceCandidate(candidate) {
   }
 }
 
-window.addIceCandidate = addIceCandidate;
+// window.addIceCandidate = addIceCandidate;
 
 async function createOffer() {
   const offer = await pc.createOffer({
@@ -42,11 +46,16 @@ async function createOffer() {
   console.log('pc offer', JSON.stringify(offer));
   return pc.localDescription;
 }
-createOffer();
+createOffer().then(offer => {
+  ipcRenderer.send('forward', 'offer', { type: offer.type, sdp: offer.sdp });
+});
 // 设置傀儡端返回的SDP
 async function setRemote(answer) {
   await pc.setRemoteDescription(answer);
 }
+ipcRenderer.on('answer', (e, answer) => {
+  setRemote(answer);
+});
 window.setRemote = setRemote; // 便于在控制台将answer设置上
 // 监听流的增加的事件
 pc.onaddstream = function(e) {

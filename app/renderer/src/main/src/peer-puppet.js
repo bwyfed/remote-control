@@ -1,5 +1,5 @@
 // 傀儡端逻辑: createAnswer, add stream
-import { desktopCapturer } from 'electron';
+import { desktopCapturer, ipcRenderer } from 'electron';
 // 获取桌面流
 async function getScreenStream() {
   const sources = await desktopCapturer.getSources({
@@ -29,6 +29,9 @@ async function getScreenStream() {
 const pc = new window.RTCPeerConnection({});
 pc.onicecandidate = function(e) {
   console.log('candidate', JSON.stringify(e.candidate));
+  if (e.candidate) {
+    ipcRenderer.send('forward', 'puppet-candidate', e.candidate);
+  }
 };
 let candidates = [];
 async function addIceCandidate(candidate) {
@@ -44,6 +47,10 @@ async function addIceCandidate(candidate) {
 }
 
 window.addIceCandidate = addIceCandidate;
+ipcRenderer.on('offer', async (e, offer) => {
+  let answer = await createAnswer(offer);
+  ipcRenderer.send('forward', 'answer', { type: answer, sdp: answer.sdp });
+});
 async function createAnswer(offer) {
   let screenStream = await getScreenStream(); // 添加桌面流
   pc.addStream(screenStream);
