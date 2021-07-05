@@ -1,11 +1,23 @@
-const { app } = require('electron');
-const handleIPC = require('./ipc');
-const { create: createMainWindow } = require('./windows/main');
-// const { create: createControlWindow } = require('./windows/control');
+const { app, BrowserWindow } = require('electron');
+const isDev = require('electron-is-dev');
+const path = require('path');
 
+let win;
 app.on('ready', () => {
-  // createControlWindow();
-  createMainWindow();
-  handleIPC();
-  // require('./robot')();
+  win = new BrowserWindow({
+    width: 600,
+    height: 300,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+  if (isDev) {
+    win.loadURL('http://localhost:3000');
+  } else {
+    // 线上环境加载页面，第三章再开发
+    win.loadFile(
+      path.resolve(__dirname, '../../renderer/pages/main/index.html')
+    );
+  }
 });
