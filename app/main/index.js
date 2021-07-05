@@ -15,9 +15,9 @@ app.on('ready', () => {
   if (isDev) {
     win.loadURL('http://localhost:3000');
   } else {
-    // 线上环境加载页面，第三章再开发
+    // 线上环境加载主页面，第三章再开发
     win.loadFile(
-      path.resolve(__dirname, '../../renderer/pages/main/index.html')
+      path.resolve(__dirname, '../renderer/pages/main/index.html')
     );
   }
 });
