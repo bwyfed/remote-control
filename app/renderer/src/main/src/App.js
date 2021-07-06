@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 // import logo from "./logo.svg";
 import "./App.css";
 import { ipcRenderer } from "electron";
+import "./peer-puppet";
 // const { ipcRenderer } = window.require('electron');
-ipcRenderer.send("haha");
 
 function App() {
   const [remoteCode, setRemoteCode] = useState(""); // 远程控制码
