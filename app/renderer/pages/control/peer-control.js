@@ -12,6 +12,26 @@ const peer = new EventEmitter();
 //   ipcRenderer.send("robot", type, data);
 // });
 const pc = new window.RTCPeerConnection({});
+// onicecandidate iceEvent
+// addIceCandidate
+pc.onicecandidate = function (e) {
+  console.log("candidate", JSON.stringify(e.candidate));
+};
+let candidates = [];
+async function addIceCandidate(candidate) {
+  if (candidate) {
+    candidates.push(candidate);
+  }
+  if (pc.remoteDescription && pc.remoteDescription.type) {
+    for (let i = 0; i < candidates.length; i++) {
+      await pc.addIceCandidate(new RTCIceCandidate(candidates[i]));
+    }
+    candidates = [];
+  }
+}
+
+window.addIceCandidate = addIceCandidate; // 便于在控制台调用
+
 async function createOffer() {
   const offer = await pc.createOffer({
     offerToReceiveAudio: false,
