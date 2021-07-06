@@ -7,4 +7,6 @@ app.on("ready", () => {
   // createMainWindow();
   createControlWindow();
   handleIPC();
+  // 处理robot.js的逻辑
+  require("./robot.js")();
 });
