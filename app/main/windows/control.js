@@ -21,4 +21,4 @@ function send(channel, ...args) {
   win.webContents.send(channel, ...args);
 }
 
-module.exports = { create };
+module.exports = { create, send };

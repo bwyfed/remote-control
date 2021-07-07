@@ -13,7 +13,6 @@ ws.on("message", function incoming(message) {
   let data = {};
   try {
     data = JSON.parse(message);
-    console.log("data", data, message);
   } catch (e) {
     console.error("parse error", e);
   }
@@ -24,7 +23,7 @@ function send(event, data) {
   console.log("sended", JSON.stringify({ event, data }));
   ws.send(JSON.stringify({ event, data }));
 }
-
+// 发送一个事件，并等待事件返回来后，将结果返回
 function invoke(event, data, answerEvent) {
   return new Promise((resolve, reject) => {
     send(event, data);
