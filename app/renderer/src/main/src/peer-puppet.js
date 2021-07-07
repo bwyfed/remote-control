@@ -35,6 +35,21 @@ async function getScreenStream() {
   });
 }
 const pc = new window.RTCPeerConnection({});
+pc.ondatachannel = (e) => {
+  console.log("datachannel", e);
+  e.channel.onmessage = (e) => {
+    console.log("onmessage", e, JSON.parse(e.data)); // 从控制端发送过来的指令
+    let { type, data } = JSON.parse(e.data);
+    console.log("robot", type, data);
+    if (type === "mouse") {
+      data.screen = {
+        width: window.screen.width,
+        height: window.screen.height,
+      };
+    }
+    ipcRenderer.send("robot", type, data);
+  };
+};
 pc.onicecandidate = function (e) {
   console.log("candidate", JSON.stringify(e.candidate));
   // 告知其他人

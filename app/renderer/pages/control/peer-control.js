@@ -5,6 +5,19 @@ const peer = new EventEmitter();
 const { ipcRenderer } = require("electron");
 
 const pc = new window.RTCPeerConnection({});
+let dc = pc.createDataChannel("robotchannel", { reliable: false }); // 创建一个 datachannel，允许丢失
+dc.onopen = function () {
+  console.log("opened");
+  peer.on("robot", (type, data) => {
+    dc.send(JSON.stringify({ type, data })); // 发送到傀儡端
+  });
+};
+dc.onmessage = function (event) {
+  console.log("message", event);
+};
+dc.onerror = (e) => {
+  console.log(e);
+};
 // onicecandidate iceEvent
 // addIceCandidate
 pc.onicecandidate = function (e) {
