@@ -1,5 +1,5 @@
 {
-  "name": "remote-control",
+  "name": "Mercurius",
   "version": "1.0.0",
   "description": "用electron开发的远程控制项目。",
   "main": "app/main/index.js",
@@ -15,7 +15,7 @@
     "url": "git+https://github.com/bwyfed/remote-control.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "dragon",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/bwyfed/remote-control/issues"
@@ -28,6 +28,7 @@
     "wait-on": "^6.0.0"
   },
   "dependencies": {
+    "about-window": "^1.14.0",
     "electron-is-dev": "^2.0.0",
     "robotjs": "^0.6.0",
     "vkey": "^1.0.1",
