@@ -35,24 +35,6 @@ async function getScreenStream() {
   });
 }
 const pc = new window.RTCPeerConnection({});
-// 收到数据通道消息
-pc.ondatachannel = (e) => {
-  console.log("datachannel", e);
-  e.channel.onmessage = (e) => {
-    // 接收到控制端发送过来的指令
-    console.log("onmessage", e, JSON.parse(e.data));
-    let { type, data } = JSON.parse(e.data);
-    // 傀儡端监听鼠标键盘事件
-    console.log("robot", type, data);
-    if (type === "mouse") {
-      data.screen = {
-        width: window.screen.width,
-        height: window.screen.height,
-      };
-    }
-    ipcRenderer.send("robot", type, data);
-  };
-};
 pc.onicecandidate = function (e) {
   console.log("candidate", JSON.stringify(e.candidate));
   // 告知其他人
@@ -75,19 +57,18 @@ async function addIceCandidate(candidate) {
     candidates = [];
   }
 }
-ipcRenderer.on("offer", (e, offer) => {
-  async function createAnswer(offer) {
-    let screenStream = await getScreenStream(); // 添加桌面流
-    pc.addStream(screenStream);
-    await pc.setRemoteDescription(offer); // 设置控制端的描述
-    await pc.setLocalDescription(await pc.createAnswer()); // 设置本地会话描述
-    console.log("answer", JSON.stringify(pc.localDescription));
-    return pc.localDescription;
-  }
-  createAnswer(offer).then((answer) => {
-    ipcRenderer.send("forward", "answer", {
-      type: answer.type,
-      sdp: answer.sdp,
-    });
+ipcRenderer.on("offer", async (e, offer) => {
+  const answer = await createAnswer(offer);
+  ipcRenderer.send("forward", "answer", {
+    type: answer.type,
+    sdp: answer.sdp,
   });
 });
+async function createAnswer(offer) {
+  let screenStream = await getScreenStream(); // 添加桌面流
+  pc.addStream(screenStream);
+  await pc.setRemoteDescription(offer); // 设置控制端的描述
+  await pc.setLocalDescription(await pc.createAnswer()); // 设置本地会话描述
+  console.log("answer", JSON.stringify(pc.localDescription));
+  return pc.localDescription;
+}

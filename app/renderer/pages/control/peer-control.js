@@ -5,26 +5,14 @@ const peer = new EventEmitter();
 const { ipcRenderer } = require("electron");
 
 const pc = new window.RTCPeerConnection({});
-let dc = pc.createDataChannel("robotchannel", { reliable: false });
-console.log("before-opened", dc);
-dc.onopen = function () {
-  console.log("opened");
-  peer.on("robot", (type, data) => {
-    dc.send(JSON.stringify({ type, data })); // 发送到傀儡端
-  });
-};
-dc.onmessage = function (event) {
-  console.log("message", event);
-};
-dc.onerror = (e) => {
-  console.log(e);
-};
 // onicecandidate iceEvent
 // addIceCandidate
 pc.onicecandidate = function (e) {
   console.log("candidate", JSON.stringify(e.candidate));
-  ipcRenderer.send("forward", "control-candidate", e.candidate);
-  // 告知其他人
+  if (e.candidate) {
+    ipcRenderer.send("forward", "control-candidate", e.candidate);
+    // 告知其他人
+  }
 };
 ipcRenderer.on("candidate", (e, candidate) => {
   addIceCandidate(candidate);
@@ -56,16 +44,13 @@ createOffer().then((offer) => {
   ipcRenderer.send("forward", "offer", { type: offer.type, sdp: offer.sdp });
 });
 
-ipcRenderer.on("answer", (e, answer) => {
-  setRemote(answer);
-});
-
 // 发送到傀儡端
 async function setRemote(answer) {
   await pc.setRemoteDescription(answer);
 }
-// 为了便于演示，直接挂载在全局
-window.setRemote = setRemote;
+ipcRenderer.on("answer", (e, answer) => {
+  setRemote(answer);
+});
 pc.onaddstream = function (e) {
   console.log("add stream", e);
   peer.emit("add-stream", e.stream); // 抛给外层
