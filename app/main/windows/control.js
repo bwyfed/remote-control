@@ -17,4 +17,8 @@ function create() {
   );
 }
 
+function send(channel, ...args) {
+  win.webContents.send(channel, ...args);
+}
+
 module.exports = { create };

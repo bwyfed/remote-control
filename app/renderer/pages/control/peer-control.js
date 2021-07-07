@@ -16,7 +16,12 @@ const pc = new window.RTCPeerConnection({});
 // addIceCandidate
 pc.onicecandidate = function (e) {
   console.log("candidate", JSON.stringify(e.candidate));
+  ipcRenderer.send("forward", "control-candidate", e.candidate);
+  // 告知其他人
 };
+ipcRenderer.on("candidate", (e, candidate) => {
+  addIceCandidate(candidate);
+});
 let candidates = [];
 async function addIceCandidate(candidate) {
   if (candidate) {
@@ -29,9 +34,6 @@ async function addIceCandidate(candidate) {
     candidates = [];
   }
 }
-
-window.addIceCandidate = addIceCandidate; // 便于在控制台调用
-
 async function createOffer() {
   const offer = await pc.createOffer({
     offerToReceiveAudio: false,
@@ -41,7 +43,16 @@ async function createOffer() {
   console.log("pc offer", JSON.stringify(offer));
   return pc.localDescription;
 }
-createOffer();
+createOffer().then((offer) => {
+  console.log("forward", "offer", offer);
+  // 转发到傀儡端
+  ipcRenderer.send("forward", "offer", { type: offer.type, sdp: offer.sdp });
+});
+
+ipcRenderer.on("answer", (e, answer) => {
+  setRemote(answer);
+});
+
 // 发送到傀儡端
 async function setRemote(answer) {
   await pc.setRemoteDescription(answer);
